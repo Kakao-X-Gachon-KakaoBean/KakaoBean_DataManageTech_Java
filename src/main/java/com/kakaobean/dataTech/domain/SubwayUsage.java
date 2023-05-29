@@ -1,6 +1,6 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 
 
@@ -13,11 +13,11 @@ public class SubwayUsage {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     SubwayStation subwayStation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     private Precipitation precipitation;
 

@@ -1,8 +1,8 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -14,18 +14,18 @@ public class Precipitation {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     private Date date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     private TimeStamp timeStamp;
 
     private float precipitation;
 
-    @OneToMany(mappedBy = "precipitation", cascade = CascadeType.ALL)
-    private List<SubwayUsage> subwayUsage;
+//    @OneToMany(mappedBy = "precipitation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<SubwayUsage> subwayUsage;
 
 
 }

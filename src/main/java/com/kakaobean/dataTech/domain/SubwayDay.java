@@ -1,8 +1,8 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -17,8 +17,8 @@ public class SubwayDay {
     @Enumerated(EnumType.STRING)
     private Week week_day;
 
-    @OneToMany(mappedBy = "week_day", cascade = CascadeType.ALL)
-    private List<Date> subwayDate;
+//    @OneToMany(mappedBy = "week_day", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Date> subwayDate;
 
 
 

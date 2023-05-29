@@ -1,8 +1,8 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.util.List;
 
 
@@ -17,11 +17,11 @@ public class Date {
 
     private java.util.Date date; // 날짜 2023/5/12
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     private SubwayDay week_day; // 요일 FRI
 
-    @OneToMany(mappedBy = "date", cascade = CascadeType.ALL)
-    private List<Precipitation> perceptation;
+//    @OneToMany(mappedBy = "date", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Precipitation> perceptation;
 
 }

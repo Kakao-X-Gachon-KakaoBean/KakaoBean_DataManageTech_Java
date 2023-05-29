@@ -1,6 +1,6 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,12 +16,12 @@ public class SubwayStation {
 
     private String stationName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
     private SubwayLine subwayLine;
 
-    @OneToMany(mappedBy = "subwayStation", cascade = CascadeType.ALL)
-    private List<SubwayUsage> subwayUsage;
+//    @OneToMany(mappedBy = "subwayStation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<SubwayUsage> subwayUsage;
 
 
 }

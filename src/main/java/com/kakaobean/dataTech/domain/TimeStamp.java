@@ -1,6 +1,6 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class TimeStamp {
 
     private String time_stamp;
 
-    @OneToMany(mappedBy = "timeStamp", cascade = CascadeType.ALL)
-    private List<Precipitation> precipitation;
+//    @OneToMany(mappedBy = "timeStamp", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<Precipitation> precipitation;
 
 }

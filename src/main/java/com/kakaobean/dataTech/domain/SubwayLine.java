@@ -1,6 +1,6 @@
 package com.kakaobean.dataTech.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class SubwayLine {
 
     private String lineName;
 
-    @OneToMany(mappedBy = "subwayLine", cascade = CascadeType.ALL)
-    private List<SubwayStation> subwayStation;
+//    @OneToMany(mappedBy = "subwayLine", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private List<SubwayStation> subwayStation;
 
 }
