@@ -17,13 +17,13 @@ public class Date {
     @GeneratedValue
     private Long id;
 
-    private LocalDate date; // 날짜 2023/5/12
+    private String date; // 날짜 2020-05-12
 
     @ManyToOne
     @JoinColumn
     private DayOfWeek week_day; // 요일 FRI
 
-    public Date(LocalDate date) {
+    public Date(String date) {
         this.date = date;
     }
 
