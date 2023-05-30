@@ -68,7 +68,7 @@ public class CsvService {
             // 요일 찾기
             String dayOfWeek = date.getDayOfWeek().toString();
             DayOfWeek findDayOfWeek = dayOfWeekRepository.findByDayOfWeek(dayOfWeek)
-                    .orElseThrow(() -> new RuntimeException("요일 못찾겠다"));
+                    .orElseThrow(() -> new RuntimeException("요일 못 찾겠다"));
 
             Date dateEntity = new Date(outputDate);
             dateEntity.addWeekDay(findDayOfWeek);
@@ -82,9 +82,11 @@ public class CsvService {
     @Transactional
     public void registerPrecipitation() throws CsvValidationException, IOException {
         readWeatherCSVFile("src/main/resources/dataset/weather20.csv");
+        readWeatherCSVFile("src/main/resources/dataset/weather21.csv");
+        readWeatherCSVFile("src/main/resources/dataset/weather22.csv");
     }
 
-    // CSV 파일 읽기
+    // 날씨 CSV 파일 읽기
     public void readWeatherCSVFile(String fileName) throws IOException, CsvValidationException {
 
         CSVReader csvReader = new CSVReader(new FileReader(fileName));
@@ -94,14 +96,16 @@ public class CsvService {
 
         while ((line = csvReader.readNext()) != null) {
             String date = line[2].split(" ")[0]; // 2020.1.1 ~2020.12.31
-            String time = line[2].split(" ")[1].split(":")[0];  // 0 ~ 23
+            String time = line[2].split(" ")[1];  // 0 ~ 23
             double precipitation = Double.parseDouble(line[3]); // 1.7 , 0.2 등등
 
+            // 해당 강수량에 대한 날짜와 시간 조회하기
             Date findDate = dateRepository.findByDate(date)
-                    .orElseThrow(() -> new RuntimeException("날짜 못찾겠다"));
+                    .orElseThrow(() -> new RuntimeException("날짜 못 찾겠다"));
             TimeStamp findTimeStamp = timeStampRepository.findByTimeStamp(time)
-                    .orElseThrow(() -> new RuntimeException("시간 못찾겠다"));
+                    .orElseThrow(() -> new RuntimeException("시간 못 찾겠다"));
 
+            // 강수량 엔티티 생성 및 저장
             Precipitation precipitationEntity = new Precipitation(precipitation);
             precipitationEntity.addDate(findDate);
             precipitationEntity.addTimeStamp(findTimeStamp);
@@ -113,5 +117,4 @@ public class CsvService {
 //            System.out.println(precipitation);
         }
     }
-
 }
