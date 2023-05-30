@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +29,9 @@ public class CsvService {
     private final DateRepository dateRepository;
     private final PrecipitationRepository precipitationRepository;
 
-
     // 요일 생성
     @Transactional
-    public void registerDay(){
+    public void registerDay() {
         dayOfWeekRepository.save(new DayOfWeek(Week.MONDAY.toString()));
         dayOfWeekRepository.save(new DayOfWeek(Week.TUESDAY.toString()));
         dayOfWeekRepository.save(new DayOfWeek(Week.WEDNESDAY.toString()));
@@ -43,17 +43,17 @@ public class CsvService {
 
     // 시간 생성
     @Transactional
-    public void registerTime(){
+    public void registerTime() {
         for (int i = 0; i < 24; i++) {
-            timeStampRepository.save(new TimeStamp(i+":00"));
+            timeStampRepository.save(new TimeStamp(i + ":00"));
         }
     }
 
     // 날짜 생성
     @Transactional
-    public void registerDate(){
-        LocalDate startDate = LocalDate.of(2020,1,1);
-        LocalDate endDate = LocalDate.of(2022,12,31);
+    public void registerDate() {
+        LocalDate startDate = LocalDate.of(2020, 1, 1);
+        LocalDate endDate = LocalDate.of(2022, 12, 31);
 
         List<Date> dateList = new ArrayList<>();
 
@@ -82,11 +82,11 @@ public class CsvService {
     @Transactional
     public void registerPrecipitation() throws CsvValidationException, IOException {
         readWeatherCSVFile("src/main/resources/dataset/weather20.csv");
-        readWeatherCSVFile("src/main/resources/dataset/weather21.csv");
-        readWeatherCSVFile("src/main/resources/dataset/weather22.csv");
+//        readWeatherCSVFile("src/main/resources/dataset/weather21.csv");
+//        readWeatherCSVFile("src/main/resources/dataset/weather22.csv");
     }
 
-    // 날씨 CSV 파일 읽기
+    // weather CSV 파일 읽기
     public void readWeatherCSVFile(String fileName) throws IOException, CsvValidationException {
 
         CSVReader csvReader = new CSVReader(new FileReader(fileName));
@@ -94,27 +94,88 @@ public class CsvService {
 
         csvReader.readNext(); // 첫 번째 라인 건너뛰기
 
+        //--------------------------------------------------------------------------------
+        LocalDate startDate = LocalDate.of(2020, 1, 1);
+        int startTime = 0;
+        //--------------------------------------------------------------------------------
+
         while ((line = csvReader.readNext()) != null) {
+
+            // 강수량이 있는 데이터
             String date = line[2].split(" ")[0]; // 2020.1.1 ~2020.12.31
-            String time = line[2].split(" ")[1];  // 0 ~ 23
+            String time = line[2].split(" ")[1];  // 0:00 ~ 23:00
             double precipitation = Double.parseDouble(line[3]); // 1.7 , 0.2 등등
 
-            // 해당 강수량에 대한 날짜와 시간 조회하기
-            Date findDate = dateRepository.findByDate(date)
-                    .orElseThrow(() -> new RuntimeException("날짜 못 찾겠다"));
-            TimeStamp findTimeStamp = timeStampRepository.findByTimeStamp(time)
-                    .orElseThrow(() -> new RuntimeException("시간 못 찾겠다"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+            LocalDate endDate = LocalDate.parse(date, formatter); // 다시 2020-01-01로 바꿔줌
 
-            // 강수량 엔티티 생성 및 저장
-            Precipitation precipitationEntity = new Precipitation(precipitation);
-            precipitationEntity.addDate(findDate);
-            precipitationEntity.addTimeStamp(findTimeStamp);
+            for (LocalDate loopDate = startDate; loopDate.isBefore(endDate.plusDays(1)); loopDate = loopDate.plusDays(1)) {
 
-            precipitationRepository.save(precipitationEntity);
+                // loopDate를 string 포멧으로 변환
+                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+                LocalDate inputDate = LocalDate.parse(loopDate.toString(), inputFormatter);
+                String formattedLoopDate = inputDate.format(outputFormatter);
 
-//            System.out.println(date);
-//            System.out.println(time);
-//            System.out.println(precipitation);
+                // 다르면
+                if (!loopDate.equals(endDate)) {
+                    for (int i = startTime; i < 24; i++) {
+                        Date new_0_date = dateRepository.findByDate(formattedLoopDate)
+                                .orElseThrow(() -> new RuntimeException("날짜..."));
+                        TimeStamp new_0_time = timeStampRepository.findByTimeStamp(i + ":00")
+                                .orElseThrow(() -> new RuntimeException("...시간"));
+
+                        Precipitation new_0_precipitation = new Precipitation(0);
+                        new_0_precipitation.addDate(new_0_date);
+                        new_0_precipitation.addTimeStamp(new_0_time);
+
+                        precipitationRepository.save(new_0_precipitation);
+
+                        startTime = 0;
+                    }
+                } else {
+                    for (int i = startTime; i < Integer.parseInt(time.split(":")[0]); i++) {
+                        Date new_0_date = dateRepository.findByDate(formattedLoopDate)
+                                .orElseThrow(() -> new RuntimeException("날짜..."));
+                        TimeStamp new_0_time = timeStampRepository.findByTimeStamp(i + ":00")
+                                .orElseThrow(() -> new RuntimeException("...시간"));
+
+                        Precipitation new_0_precipitation = new Precipitation(0);
+                        new_0_precipitation.addDate(new_0_date);
+                        new_0_precipitation.addTimeStamp(new_0_time);
+
+                        precipitationRepository.save(new_0_precipitation);
+                    }
+
+                    // 강수량이 있는 데이터 저장
+                    // DB에 저장될 강수량에 대한 날짜와 시간 조회하기
+                    Date findDate = dateRepository.findByDate(date)
+                            .orElseThrow(() -> new RuntimeException("날짜 못 찾겠다"));
+                    TimeStamp findTimeStamp = timeStampRepository.findByTimeStamp(time)
+                            .orElseThrow(() -> new RuntimeException("시간 못 찾겠다"));
+
+                    // 강수량 엔티티 생성 및 저장
+                    Precipitation precipitationEntity = new Precipitation(precipitation);
+                    precipitationEntity.addDate(findDate);
+                    precipitationEntity.addTimeStamp(findTimeStamp);
+
+                    precipitationRepository.save(precipitationEntity);
+
+                    // start 날짜와 시간 초기화
+                    startDate = loopDate;
+                    startTime = Integer.parseInt(time.split(":")[0]) + 1;
+
+                    break;
+                }
+            }
+
         }
+
+        // 마지막 날짜와 시간에서 12월 31일까지의 데이터가 필요할듯
+
     }
+
 }
+
+
+
