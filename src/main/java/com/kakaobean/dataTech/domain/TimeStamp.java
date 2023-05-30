@@ -2,11 +2,13 @@ package com.kakaobean.dataTech.domain;
 
 import javax.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "TimeStamp")
 public class TimeStamp {
 
@@ -16,7 +18,11 @@ public class TimeStamp {
 
     private String time_stamp;
 
-//    @OneToMany(mappedBy = "timeStamp", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public TimeStamp(String time_stamp) {
+        this.time_stamp = time_stamp;
+    }
+
+    //    @OneToMany(mappedBy = "timeStamp", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    private List<Precipitation> precipitation;
 
 }

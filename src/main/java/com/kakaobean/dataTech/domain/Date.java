@@ -1,13 +1,15 @@
 package com.kakaobean.dataTech.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDate;
 
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "Date")
 public class Date {
 
@@ -15,13 +17,21 @@ public class Date {
     @GeneratedValue
     private Long id;
 
-    private java.util.Date date; // 날짜 2023/5/12
+    private LocalDate date; // 날짜 2023/5/12
 
     @ManyToOne
     @JoinColumn
-    private SubwayDay week_day; // 요일 FRI
+    private DayOfWeek week_day; // 요일 FRI
 
-//    @OneToMany(mappedBy = "date", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Date(LocalDate date) {
+        this.date = date;
+    }
+
+    public void addWeekDay(DayOfWeek dayOfWeek){
+        this.week_day = dayOfWeek;
+    }
+
+    //    @OneToMany(mappedBy = "date", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    private List<Precipitation> perceptation;
 
 }
