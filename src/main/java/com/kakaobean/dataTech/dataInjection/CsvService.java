@@ -96,6 +96,7 @@ public class CsvService {
 
         //--------------------------------------------------------------------------------
         LocalDate startDate = LocalDate.of(2020, 1, 1);
+        LocalDate lastDate = LocalDate.of(2020,12,31);
         int startTime = 0;
         //--------------------------------------------------------------------------------
 
@@ -134,6 +135,7 @@ public class CsvService {
                         startTime = 0;
                     }
                 } else {
+                    // 강수량 0으로 채우기
                     for (int i = startTime; i < Integer.parseInt(time.split(":")[0]); i++) {
                         Date new_0_date = dateRepository.findByDate(formattedLoopDate)
                                 .orElseThrow(() -> new RuntimeException("날짜..."));
@@ -171,7 +173,53 @@ public class CsvService {
 
         }
 
-        // 마지막 날짜와 시간에서 12월 31일까지의 데이터가 필요할듯
+        // 나머지 12월 31일 24시까지 강수량 0 데이터 밀어넣기
+        for (LocalDate loopDate = startDate; loopDate.isBefore(lastDate.plusDays(1)); loopDate = loopDate.plusDays(1)) {
+
+            // loopDate를 string 포멧으로 변환
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy.M.d");
+            LocalDate inputDate = LocalDate.parse(loopDate.toString(), inputFormatter);
+            String formattedLoopDate = inputDate.format(outputFormatter);
+
+            if (!loopDate.equals(lastDate)){
+                for (int i = startTime; i < 24; i++) {
+
+                    Date new_0_date = dateRepository.findByDate(formattedLoopDate)
+                            .orElseThrow(() -> new RuntimeException("날짜..."));
+                    TimeStamp new_0_time = timeStampRepository.findByTimeStamp(i + ":00")
+                            .orElseThrow(() -> new RuntimeException("...시간"));
+
+                    Precipitation new_0_precipitation = new Precipitation(0);
+                    new_0_precipitation.addDate(new_0_date);
+                    new_0_precipitation.addTimeStamp(new_0_time);
+
+                    precipitationRepository.save(new_0_precipitation);
+
+                    startTime = 0;
+                }
+            }else if(loopDate.equals(lastDate)){
+                for (int i = startTime; i < 24; i++) {
+
+                    Date new_0_date = dateRepository.findByDate(formattedLoopDate)
+                            .orElseThrow(() -> new RuntimeException("날짜..."));
+                    TimeStamp new_0_time = timeStampRepository.findByTimeStamp(i + ":00")
+                            .orElseThrow(() -> new RuntimeException("...시간"));
+
+                    Precipitation new_0_precipitation = new Precipitation(0);
+                    new_0_precipitation.addDate(new_0_date);
+                    new_0_precipitation.addTimeStamp(new_0_time);
+
+                    precipitationRepository.save(new_0_precipitation);
+
+                    startTime = 0;
+                }
+
+                break;
+            }
+
+
+        }
 
     }
 
