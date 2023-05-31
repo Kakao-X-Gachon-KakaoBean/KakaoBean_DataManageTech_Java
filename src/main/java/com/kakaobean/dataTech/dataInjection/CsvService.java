@@ -81,13 +81,13 @@ public class CsvService {
     // 강수량 생성
     @Transactional
     public void registerPrecipitation() throws CsvValidationException, IOException {
-        readWeatherCSVFile("src/main/resources/dataset/weather20.csv");
-//        readWeatherCSVFile("src/main/resources/dataset/weather21.csv");
-//        readWeatherCSVFile("src/main/resources/dataset/weather22.csv");
+        readWeatherCSVFile("src/main/resources/dataset/weather20.csv", 2020);
+        readWeatherCSVFile("src/main/resources/dataset/weather21.csv", 2021);
+        readWeatherCSVFile("src/main/resources/dataset/weather22.csv", 2022);
     }
 
     // weather CSV 파일 읽기
-    public void readWeatherCSVFile(String fileName) throws IOException, CsvValidationException {
+    public void readWeatherCSVFile(String fileName, int year) throws IOException, CsvValidationException {
 
         CSVReader csvReader = new CSVReader(new FileReader(fileName));
         String[] line;
@@ -95,8 +95,8 @@ public class CsvService {
         csvReader.readNext(); // 첫 번째 라인 건너뛰기
 
         //--------------------------------------------------------------------------------
-        LocalDate startDate = LocalDate.of(2020, 1, 1);
-        LocalDate lastDate = LocalDate.of(2020,12,31);
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate lastDate = LocalDate.of(year,12,31);
         int startTime = 0;
         //--------------------------------------------------------------------------------
 
