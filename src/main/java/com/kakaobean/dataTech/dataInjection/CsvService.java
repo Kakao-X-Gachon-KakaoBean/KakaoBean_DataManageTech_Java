@@ -81,7 +81,7 @@ public class CsvService {
     // 강수량 생성
     @Transactional
     public void registerPrecipitation() throws CsvValidationException, IOException {
-        readWeatherCSVFile("src/main/resources/dataset/weather20.csv", 2020);
+//        readWeatherCSVFile("src/main/resources/dataset/weather20.csv", 2020);
         readWeatherCSVFile("src/main/resources/dataset/weather21.csv", 2021);
         readWeatherCSVFile("src/main/resources/dataset/weather22.csv", 2022);
     }
@@ -118,8 +118,9 @@ public class CsvService {
                 LocalDate inputDate = LocalDate.parse(loopDate.toString(), inputFormatter);
                 String formattedLoopDate = inputDate.format(outputFormatter);
 
-                // 다르면
+                // 다른 날이면?
                 if (!loopDate.equals(endDate)) {
+                    // 강수량 0으로 채우기
                     for (int i = startTime; i < 24; i++) {
                         Date new_0_date = dateRepository.findByDate(formattedLoopDate)
                                 .orElseThrow(() -> new RuntimeException("날짜..."));
@@ -134,6 +135,7 @@ public class CsvService {
 
                         startTime = 0;
                     }
+                // 같은 날이면?
                 } else {
                     // 강수량 0으로 채우기
                     for (int i = startTime; i < Integer.parseInt(time.split(":")[0]); i++) {
@@ -165,7 +167,13 @@ public class CsvService {
 
                     // start 날짜와 시간 초기화
                     startDate = loopDate;
-                    startTime = Integer.parseInt(time.split(":")[0]) + 1;
+                    startTime = Integer.parseInt(time.split(":")[0]) + 1; // 23시여서 +1 하고 startTime이 24가 되어버리면?
+
+                    // 23시 이슈
+                    if(startTime == 24){
+                        startDate = startDate.plusDays(1);
+                        startTime = 0;
+                    }
 
                     break;
                 }
