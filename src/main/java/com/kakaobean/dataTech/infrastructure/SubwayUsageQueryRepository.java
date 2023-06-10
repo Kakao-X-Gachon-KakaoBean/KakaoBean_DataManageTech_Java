@@ -13,21 +13,20 @@ import java.util.List;
 public class SubwayUsageQueryRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private Integer count = 0;
-
+    private Integer last = 1000000;
+    private final Integer limit = 1000000;
 
     public List<BasicDto> findAll(){
-        ++count;
-        return jdbcTemplate.query("SELECT on_board, off_board, station_name, line_name, precipitation, date, week_day, time_stamp\n" +
-                "FROM subway_usage as su\n" +
-                "join subway_station ss on su.subway_station_id = ss.id\n" +
-                "join subway_line sl on sl.id = ss.subway_line_id\n" +
-                "join precipitation p on su.precipitation_id = p.id\n" +
-                "join date d on d.id = p.date_id\n" +
-                "join day_of_week dow on dow.id = d.week_day_id\n" +
-                "join time_stamp ts on p.time_stamp_id = ts.id\n" +
-                        "limit ?",
-                new Object[ count * 100000],
+        System.out.println("last = " + last);
+        List<BasicDto> list = jdbcTemplate.query("SELECT on_board, off_board, station_name, line_name, precipitation, date, week_day, time_stamp\n" +
+                        "FROM subway_usage as su " +
+                        "join subway_station ss on su.subway_station_id = ss.id\n" +
+                        "join subway_line sl on sl.id = ss.subway_line_id\n" +
+                        "join precipitation p on su.precipitation_id = p.id\n" +
+                        "join date d on d.id = p.date_id\n" +
+                        "join day_of_week dow on dow.id = d.week_day_id\n" +
+                        "join time_stamp ts on p.time_stamp_id = ts.id\n" +
+                        "where su.id < ? limit ?",
                 (rs, rowNum) -> new BasicDto(
                         rs.getInt("on_board"),
                         rs.getInt("off_board"),
@@ -37,6 +36,13 @@ public class SubwayUsageQueryRepository {
                         rs.getString("date"),
                         rs.getString("week_day"),
                         rs.getString("time_stamp")
-                ));
+                ),
+                last, limit
+        );
+        last += limit;
+        return list;
     }
 }
+
+// 인덱스를 태우는 페이징 처리 쿼리
+//SELECT * FROM 테이블명 WHERE 숫자(A) < key LIMIT 숫자(B)
