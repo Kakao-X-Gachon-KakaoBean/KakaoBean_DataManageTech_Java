@@ -1,10 +1,9 @@
 package com.kakaobean.dataTech.domain.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-public class Dto {
+public class BasicDto {
 
     private final Integer onBoard;
     private final Integer offBoard;
@@ -15,14 +14,14 @@ public class Dto {
     private final String weekDay; // ex 월요일, 화요일
     private final String timeStamp; //0:00, 1:00, 2:00
 
-    public Dto(Integer onBoard,
-               Integer offBoard,
-               String subwayStationName,
-               String subwayLine,
-               Double precipitation,
-               String date,
-               String weekDay,
-               String timeStamp) {
+    public BasicDto(Integer onBoard,
+                    Integer offBoard,
+                    String subwayStationName,
+                    String subwayLine,
+                    Double precipitation,
+                    String date,
+                    String weekDay,
+                    String timeStamp) {
         this.onBoard = onBoard;
         this.offBoard = offBoard;
         this.subwayStationName = subwayStationName;
