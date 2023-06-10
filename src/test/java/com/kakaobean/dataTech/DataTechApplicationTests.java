@@ -1,13 +1,22 @@
 package com.kakaobean.dataTech;
 
+import com.kakaobean.dataTech.domain.dto.Dto;
+import com.kakaobean.dataTech.infrastructure.SubwayUsageQueryRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 class DataTechApplicationTests {
+	
+	@Autowired
+	SubwayUsageQueryRepository queryRepository;
 
 	@Test
-	void contextLoads() {
+	void test() {
+		List<Dto> all = queryRepository.findAll();
+		System.out.println("all.size() = " + all.size());
 	}
-
 }
