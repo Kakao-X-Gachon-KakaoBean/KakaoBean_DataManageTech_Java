@@ -13,7 +13,7 @@ import java.util.List;
 public class TimeStamp {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String time_stamp;

@@ -81,7 +81,7 @@ public class CsvService {
     // 강수량 생성
     @Transactional
     public void registerPrecipitation() throws CsvValidationException, IOException {
-//        readWeatherCSVFile("src/main/resources/dataset/weather20.csv", 2020);
+        readWeatherCSVFile("src/main/resources/dataset/weather20.csv", 2020);
         readWeatherCSVFile("src/main/resources/dataset/weather21.csv", 2021);
         readWeatherCSVFile("src/main/resources/dataset/weather22.csv", 2022);
     }

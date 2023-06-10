@@ -10,7 +10,7 @@ import lombok.Getter;
 public class SubwayUsage {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

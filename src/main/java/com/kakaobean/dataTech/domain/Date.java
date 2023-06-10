@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Date {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String date; // 날짜 2020-05-12
