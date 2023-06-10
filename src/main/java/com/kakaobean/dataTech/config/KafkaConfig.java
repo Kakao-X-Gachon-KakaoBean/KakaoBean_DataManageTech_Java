@@ -47,7 +47,7 @@ public class KafkaConfig {
 
     @PostConstruct
     void initKakaTopic(){
-//        NewTopic newTopic = new NewTopic(TOPIC_NAME, 1, (short) 1);
-//        kafkaAdmin.createOrModifyTopics(newTopic);
+        NewTopic newTopic = new NewTopic(TOPIC_NAME, 1, (short) 1);
+        kafkaAdmin.createOrModifyTopics(newTopic);
     }
 }
