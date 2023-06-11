@@ -17,7 +17,6 @@ public class SubwayUsageQueryRepository {
     private final Integer limit = 1000000;
 
     public List<BasicDto> findAll(){
-        System.out.println("last = " + last);
         List<BasicDto> list = jdbcTemplate.query("SELECT on_board, off_board, station_name, line_name, precipitation, date, week_day, time_stamp\n" +
                         "FROM subway_usage as su " +
                         "join subway_station ss on su.subway_station_id = ss.id\n" +
