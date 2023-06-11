@@ -74,9 +74,9 @@ public class StreamsScheduler {
     }
 
     private boolean timeToGoWork(BasicDto basicDto) {
-        return basicDto.getTimeStamp().equals("13:00") |
-                basicDto.getTimeStamp().equals("1400") |
-                basicDto.getTimeStamp().equals("15:00");
+        return basicDto.getTimeStamp().equals("7:00") |
+                basicDto.getTimeStamp().equals("800") |
+                basicDto.getTimeStamp().equals("9:00");
     }
 }
 
